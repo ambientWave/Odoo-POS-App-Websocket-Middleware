@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="intgration_newleap.NewLeapWaitingPopup" t-inherit="web.ConfirmationDialog" t-inherit-mode="primary">
+        <xpath expr="//p" position="replace">
+            <div class="d-flex flex-column align-items-center justify-content-center">
+                <div class="mb-2">
+                    <i class="fa fa-circle-o-notch fa-spin" role="img" />
+                </div>
+                <p t-out="props.body" class="text-prewrap text-center" />
+                <t t-if="props.amount">
+                    <div class="mt-1">
+                        <strong>Amount: </strong>
+                        <t t-out="props.amount" />
+                    </div>
+                </t>
+                <t t-if="props.order and props.order.name">
+                    <div class="mt-1">
+                        <strong>Order: </strong>
+                        <t t-out="props.order.name" />
+                    </div>
+                </t>
+            </div>
+        </xpath>
+        <xpath expr="//button[@t-on-click='_confirm']" position="attributes">
+            <attribute name="class" add="btn-danger" remove="btn-primary" separator=" " />
+        </xpath>
+    </t>
+</templates>

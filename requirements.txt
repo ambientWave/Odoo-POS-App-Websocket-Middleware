@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+gunicorn
+websocket-client
+httpx
+python-multipart
+pydantic
+python-dotenv
+redis

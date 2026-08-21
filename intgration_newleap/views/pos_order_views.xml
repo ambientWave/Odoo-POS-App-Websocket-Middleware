@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_order_view_form_inherit_newleap" model="ir.ui.view">
+        <field name="name">pos.order.form.inherit.newleap</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="transaction_reference"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,51 @@
+NEWLEAP INTEGRATION - CHILD FRIENDLY EXPLANATION
+
+WHAT THIS MODULE IS
+This module lets the POS screen ask the NewLeap mobile app to pay, wait,
+and then finish the order when the mobile app says "paid".
+
+THE MAIN PIECES
+1) POS Screen (cashier UI).
+2) Odoo Server (business brain).
+3) Middleware (a small FastAPI bridge).
+4) NewLeap Mobile App.
+
+WEBSOCKET IN 5 TINY STEPS
+1) The mobile app opens a WebSocket to the middleware (like a walkie-talkie).
+2) The middleware checks the token with Odoo to make sure it is trusted.
+3) The line stays open so both sides can talk any time.
+4) The middleware pushes "please pay this order" to the mobile app.
+5) The mobile app sends back "paid" plus a Transaction Reference.
+
+FULL PAYMENT FLOW (SIMPLE STORY)
+1) Cashier clicks the NewLeap payment method.
+2) POS asks Odoo to start a NewLeap payment.
+3) Odoo tells the middleware: "send this order to the phone".
+4) Middleware uses the WebSocket to push the order to the phone.
+5) Phone pays and sends back a callback with:
+   - pos_order
+   - status (paid or failed)
+   - transaction_reference
+6) Middleware forwards that callback to Odoo.
+7) Odoo updates the order and notifies the POS.
+8) POS confirms the order and records the Transaction Reference.
+
+HOW THE TRANSACTION REFERENCE IS SAVED
+- The phone sends it in the callback.
+- Odoo saves it if the order already exists.
+- The POS also saves it locally so it is sent when the order syncs.
+- Result: the POS Order in Odoo shows the Transaction Reference.
+
+NEW ADDITIONS AND CHANGES (IN SIMPLE WORDS)
+1) Auto-validate NewLeap orders even if the POS setting is off.
+2) Skip the receipt screen for NewLeap and go straight to a new order.
+3) Show the exact error message from the mobile app.
+4) Match callbacks to the right order and ignore duplicates.
+5) Save the Transaction Reference on the order.
+6) Hide the "Force done" button for NewLeap.
+7) Show a clean waiting popup instead of the force done message.
+8) Middleware now passes full status and error details to Odoo.
+
+WHY THIS IS SAFE
+- The middleware checks the NewLeap token before accepting callbacks.
+- The WebSocket is only kept open if the token is valid.
